@@ -8,6 +8,6 @@ import java.util.Map;
 @Service
 public interface AdminService {
 
-    Map<String, String> AdminLogin(User user);
+    String AdminLogin(User user);
 
 }

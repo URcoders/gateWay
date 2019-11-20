@@ -12,7 +12,7 @@ public class User {
 
     private String username;
 
-    private String psw;
+    private String password;
 
     private String prio;
 

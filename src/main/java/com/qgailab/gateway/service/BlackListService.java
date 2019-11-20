@@ -5,13 +5,15 @@ import com.qgailab.gateway.model.BlackListVo;
 import com.qgailab.gateway.model.Paging;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 @Service
 public interface BlackListService {
 
-    BlackListVo queryBlackListNumber(Paging paging);
+    Map<String, Object> queryBlackListNumber(Paging paging);
 
-    String addBlackList(BlackList blackList);
+    Map<String, Object> addBlackList(BlackList blackList);
 
-    String deleteBlackList(BlackList blackList);
+    Map<String, Object> deleteBlackList(BlackList blackList);
 
 }
