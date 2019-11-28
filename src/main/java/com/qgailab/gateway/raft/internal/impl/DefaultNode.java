@@ -294,12 +294,16 @@ public class DefaultNode<T> implements Node<T>, LifeCycle, ClusterMembershipChan
             }
             return new ClientKVAck(null);
         }
+        //TODO del
+        if (request.getType() == ClientKVReq.DEL) {
+
+        }
         //TODO here add leader solve proposal.
         if (request.getType() == ClientKVReq.PROPOSE) {
             //这里需要去调用service的逻辑判断
             //解析成提案
             Proposal proposal = (Proposal) JSON.parse(request.getValue());
-            
+
         }
 
         LogEntry logEntry = LogEntry.newBuilder()

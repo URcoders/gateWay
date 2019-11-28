@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
  * @date 2019/11/13
  * <tip>take care of yourself.everything is no in vain.</tip>
  * redis的bloom配置
+ * 利用bloom处理黑名单：可达到亿级别的快速判断
  */
 @Configuration
 @PropertySource("classpath:reclient.properties")

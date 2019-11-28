@@ -1,5 +1,6 @@
 package com.qgailab.gateway.service;
 
+import com.qgailab.gateway.model.ArbitrateResult;
 import com.qgailab.gateway.model.Proposal;
 
 /**
@@ -19,7 +20,7 @@ public interface Arbitration {
     //todo 这里应该是返回一个提案
     boolean propose(Proposal proposal,boolean isRedirect);
 
-    boolean arbitrate(Proposal proposal);
+    ArbitrateResult arbitrate(Proposal proposal);
 
     /**
      * 同意提案

@@ -20,5 +20,7 @@ public class ServiceManager {
     /**
      * 服务命令空间,避免与使用分布式数据库冲突
      */
-    public static final String SERVICES_NAMESPACE="SERVICES_N_SPACE";
+    public static final String SERVICES_NAMESPACE = "SERVICES_N_SPACE";
+
+    public static final int MAX_MISS_THRESHOLD = 10;
 }

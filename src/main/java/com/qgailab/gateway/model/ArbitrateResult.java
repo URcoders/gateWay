@@ -18,6 +18,10 @@ public class ArbitrateResult implements Serializable {
      * 仲裁结果
      */
     private boolean accept;
+    /**
+     * 每个仲裁结果的说明信息
+     */
+    private String message;
 
     public boolean accept() {
         return accept;

@@ -1,7 +1,9 @@
 package com.qgailab.gateway.model;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serializable;
 
@@ -13,6 +15,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@ToString
 public class ServiceInfo implements Serializable {
     private String addressAndPort;
     /*   private String */
@@ -25,4 +28,13 @@ public class ServiceInfo implements Serializable {
      */
     private long expire;
 
+    @Override
+    public boolean equals(Object obj) {
+        JSONObject jsonObject = (JSONObject) obj;
+        ServiceInfo service = jsonObject.toJavaObject(ServiceInfo.class);
+        if (this.serviceId.equals(service.serviceId) && this.addressAndPort.equals(service.addressAndPort) && this.serviceName.equals(service.serviceName)) {
+            return true;
+        }
+        return false;
+    }
 }

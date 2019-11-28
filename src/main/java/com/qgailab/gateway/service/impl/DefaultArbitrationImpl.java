@@ -2,6 +2,7 @@ package com.qgailab.gateway.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.qgailab.gateway.config.ServiceManager;
+import com.qgailab.gateway.model.ArbitrateResult;
 import com.qgailab.gateway.model.Proposal;
 import com.qgailab.gateway.model.ProposalSolveResult;
 import com.qgailab.gateway.model.ServiceInfo;
@@ -99,27 +100,49 @@ public class DefaultArbitrationImpl implements Arbitration {
     }
 
     @Override
-    public boolean arbitrate(Proposal proposal) {
+    public ArbitrateResult arbitrate(Proposal proposal) {
+        ArbitrateResult arbitrateResult = new ArbitrateResult();
+        //处理接入提案
         if (Proposal.Type.ACCESS_APPROVAL.equals(proposal.getType())) {
             //验证是否可以接入
             ProposalSolveResult result = proposalService.solveAccess(proposal);
+            //提案处理成功
             if (result.getResult().equals(ProposalSolveResult.Result.OK)) {
                 List<String> addrs = raftNodeBootStrap.getAddressList();
                 Response<ClientKVAck> response = DaoUtil.get(PIGEON, ServiceManager.SERVICES_NAMESPACE, addrs);
-                List<ServiceInfo> serviceInfoList = ParseUtil.parseToListServiceInfo(response);
+                List serviceInfoList = ParseUtil.parseToListServiceInfo(response);
                 if (serviceInfoList == null) {
                     //这种情况应当是属于系统没有任何接入服务
                     serviceInfoList = new LinkedList<>();
                     serviceInfoList.add((ServiceInfo) proposal.getObj());
                     DaoUtil.set(PIGEON, ServiceManager.SERVICES_NAMESPACE, JSON.toJSONString(serviceInfoList), addrs);
-                    return true;
+                    arbitrateResult.setAccept(true);
+                    //TODO 修改为常量
+                    arbitrateResult.setMessage("access success!");
                 } else {
-                    //已经有了  那个更新列表
+                    //已经有了  那个更新列表,但是要先判断一下服务是否存在
+                    for (Object s : serviceInfoList) {
+                        if (((ServiceInfo) proposal.getObj()).equals(s)) {
+                            arbitrateResult.setAccept(true);
+                            //TODO 修改为常量
+                            arbitrateResult.setMessage("access renew!");
+                            //由于已经存在这个服务，因此更新一下服务的时间即可;
+                            serviceInfoList.remove(s);
+                            serviceInfoList.add(proposal.getObj());
+                            DaoUtil.set(PIGEON, ServiceManager.SERVICES_NAMESPACE, JSON.toJSONString(serviceInfoList), addrs);
+                            return arbitrateResult;
+                        }
+                    }
+                    //服务不存在的情况下
                     serviceInfoList.add((ServiceInfo) proposal.getObj());
                     DaoUtil.set(PIGEON, ServiceManager.SERVICES_NAMESPACE, JSON.toJSONString(serviceInfoList), addrs);
                     //TODO here 暂时忽略设置结果
-                    return true;
                 }
+                //提案递交超时
+            } else if (result.getResult().equals(ProposalSolveResult.Result.TIMEOUT)) {
+                //处理结果
+                arbitrateResult.setMessage("proposal timeout!");
+                arbitrateResult.setAccept(false);
             }
 
         } else if (Proposal.Type.EVICT_APPROVAL.equals(proposal.getType())) {
@@ -129,6 +152,6 @@ public class DefaultArbitrationImpl implements Arbitration {
         } else {
 
         }
-        return false;
+        return arbitrateResult;
     }
 }

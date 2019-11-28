@@ -10,6 +10,7 @@ import lombok.ToString;
  * @author linxu
  * @date 2019/11/16
  * <tip>take care of yourself.everything is no in vain.</tip>
+ *
  */
 @Getter
 @Setter
@@ -20,6 +21,7 @@ public class ClientKVReq implements Serializable {
     public static int GET = 1;
 
     public static int PROPOSE = 2;
+    public static int DEL=3;
     int type;
 
     String key;
@@ -37,7 +39,7 @@ public class ClientKVReq implements Serializable {
     }
 
     public enum Type {
-        PUT(0), GET(1), PROPOSE(2);
+        PUT(0), GET(1), PROPOSE(2),DEL(3);
         int code;
 
         Type(int code) {

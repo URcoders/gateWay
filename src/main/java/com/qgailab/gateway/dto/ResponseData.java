@@ -17,4 +17,5 @@ import java.util.List;
 public class ResponseData {
     private List<ServiceInfo> serviceList;
     private int status;
+    private String message;
 }
